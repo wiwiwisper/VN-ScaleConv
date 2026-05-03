@@ -266,24 +266,24 @@ python phenotyping/data/build_final_gt_dataset.py \
   --visual-dir phenotyping/data/final/visual
 ```
 
-### 4. Generate apex-angle candidate images
+### 4. Prepare apex-angle review images
 
 ```bash
-python phenotyping/data/generate_final_apex_candidates.py \
+python phenotyping/data/prepare_apex_angle_review.py \
   --input-dir phenotyping/data/2dsaomiao \
-  --output-dir phenotyping/data/final/tmp \
-  --output-txt phenotyping/data/final/apex_angle_candidates_to_choose.txt \
+  --output-dir phenotyping/data/final/apex_review \
+  --output-txt phenotyping/data/final/apex_angle_review.txt \
   --render-dpi 200
 ```
 
-After running this command, fill the last column of `phenotyping/data/final/apex_angle_candidates_to_choose.txt` with `1` or `2`.
+After running this command, set the `selection` column in `phenotyping/data/final/apex_angle_review.txt`.
 
 ### 5. Finalize the 6-trait GT table
 
 ```bash
 python phenotyping/data/finalize_leaf_traits_with_apex.py \
   --gt-txt phenotyping/data/final/gt_leaf_traits_5params.txt \
-  --apex-choice-txt phenotyping/data/final/apex_angle_candidates_to_choose.txt \
+  --apex-choice-txt phenotyping/data/final/apex_angle_review.txt \
   --pdf-dir phenotyping/data/2dsaomiao \
   --vein-zip phenotyping/data/yemai_length/2dsaomiao_png(1).zip \
   --output-txt phenotyping/data/final/gt_leaf_traits_6params_90.txt \

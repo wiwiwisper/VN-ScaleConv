@@ -27,7 +27,7 @@ from visualize_2d_scan_traits import crop_with_padding, draw_text_block, resolve
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Generate final apex-angle candidate images for manual 1/2 selection.")
+    parser = argparse.ArgumentParser(description="Prepare apex-angle review images.")
     parser.add_argument(
         "--input-dir",
         default="phenotyping/data/2dsaomiao",
@@ -35,13 +35,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-dir",
-        default="phenotyping/data/final/tmp",
-        help="Directory for candidate visualization images.",
+        default="phenotyping/data/final/apex_review",
+        help="Directory for review images.",
     )
     parser.add_argument(
         "--output-txt",
-        default="phenotyping/data/final/apex_angle_candidates_to_choose.txt",
-        help="Output TXT for manual 1/2 selection.",
+        default="phenotyping/data/final/apex_angle_review.txt",
+        help="Output TXT with review rows.",
     )
     parser.add_argument(
         "--render-dpi",
@@ -83,8 +83,8 @@ def obb_geometry(mask_points_cm: np.ndarray) -> tuple[np.ndarray, np.ndarray, np
     return center, eigenvectors, projected, np.vstack([length_line_cm, width_line_cm])
 
 
-def measure_candidates(pdf_path: str, dpi: int) -> tuple[dict[str, float | str], np.ndarray]:
-    with tempfile.TemporaryDirectory(prefix="final_apex_candidate_") as tmp_dir:
+def measure_review_row(pdf_path: str, dpi: int) -> tuple[dict[str, float | str], np.ndarray]:
+    with tempfile.TemporaryDirectory(prefix="final_apex_review_") as tmp_dir:
         png_path = os.path.join(tmp_dir, "page.png")
         render_pdf(pdf_path, png_path, dpi=dpi)
         image = cv2.imread(png_path, cv2.IMREAD_COLOR)
@@ -160,9 +160,8 @@ def measure_candidates(pdf_path: str, dpi: int) -> tuple[dict[str, float | str],
             f"length_cm = {sorted_extents[0]:.3f}",
             f"width_cm = {sorted_extents[1]:.3f}",
             f"perimeter_cm = {perimeter_cm:.3f}",
-            f"candidate_1_angle_deg = {angle_1:.3f}",
-            f"candidate_2_angle_deg = {angle_2:.3f}",
-            "fill 1 or 2 in apex_angle_candidates_to_choose.txt",
+            f"angle_1_deg = {angle_1:.3f}",
+            f"angle_2_deg = {angle_2:.3f}",
         ]
         draw_text_block(canvas, text_lines, origin=(18, 18))
 
@@ -177,10 +176,10 @@ def measure_candidates(pdf_path: str, dpi: int) -> tuple[dict[str, float | str],
         return summary, canvas
 
 
-def write_candidate_txt(rows: list[dict[str, float | str]], output_txt: str) -> None:
+def write_review_txt(rows: list[dict[str, float | str]], output_txt: str) -> None:
     os.makedirs(os.path.dirname(output_txt), exist_ok=True)
     with open(output_txt, "w", encoding="utf-8") as handle:
-        handle.write("pdf_name\tlength_cm\twidth_cm\tperimeter_cm\tangle_1_deg\tangle_2_deg\tchosen_tip_1_or_2\n")
+        handle.write("pdf_name\tlength_cm\twidth_cm\tperimeter_cm\tangle_1_deg\tangle_2_deg\tselection\n")
         for row in rows:
             handle.write(
                 f"{row['pdf_name']}\t{row['length_cm']:.4f}\t{row['width_cm']:.4f}\t{row['perimeter_cm']:.4f}\t"
@@ -194,13 +193,13 @@ def main() -> None:
     rows: list[dict[str, float | str]] = []
 
     for pdf_path in iter_pdfs(args.input_dir):
-        summary, canvas = measure_candidates(pdf_path, dpi=args.render_dpi)
+        summary, canvas = measure_review_row(pdf_path, dpi=args.render_dpi)
         leaf_id = os.path.splitext(os.path.basename(pdf_path))[0]
         cv2.imwrite(os.path.join(args.output_dir, f"{leaf_id}.png"), canvas)
         rows.append(summary)
 
     rows.sort(key=lambda row: int(os.path.splitext(str(row["pdf_name"]))[0]))
-    write_candidate_txt(rows, args.output_txt)
+    write_review_txt(rows, args.output_txt)
 
 
 if __name__ == "__main__":

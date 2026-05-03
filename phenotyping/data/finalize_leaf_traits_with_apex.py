@@ -52,8 +52,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--apex-choice-txt",
-        default="phenotyping/data/final/apex_angle_candidates_to_choose.txt",
-        help="Manual apex-choice TXT filled with 1 or 2.",
+        default="phenotyping/data/final/apex_angle_review.txt",
+        help="TXT with apex selection values.",
     )
     parser.add_argument(
         "--pdf-dir",
@@ -112,7 +112,7 @@ def read_apex_choices(path: str, max_leaf_id: int = 90) -> dict[int, tuple[float
     rows: dict[int, tuple[float, float, str]] = {}
     with open(path, "r", encoding="utf-8") as handle:
         header = handle.readline().strip().split("\t")
-        expected = ["pdf_name", "length_cm", "width_cm", "perimeter_cm", "angle_1_deg", "angle_2_deg", "chosen_tip_1_or_2"]
+        expected = ["pdf_name", "length_cm", "width_cm", "perimeter_cm", "angle_1_deg", "angle_2_deg", "selection"]
         if header != expected:
             raise ValueError(f"Unexpected header in {path}: {header}")
         for line in handle:

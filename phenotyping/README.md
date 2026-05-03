@@ -7,6 +7,6 @@
 - `phenotyping/data/measure_2d_scan_traits.py`
 - `phenotyping/data/visualize_2d_scan_traits.py`
 - `phenotyping/data/build_final_gt_dataset.py`
-- `phenotyping/data/generate_final_apex_candidates.py`
+- `phenotyping/data/prepare_apex_angle_review.py`
 - `phenotyping/data/finalize_leaf_traits_with_apex.py`
 - `phenotyping/data/final/measure_small_ply_geometry.py`

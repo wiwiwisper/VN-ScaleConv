@@ -42,7 +42,7 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, default=0)
     parser.add_argument("--max_leaf_id", type=int, default=90)
     parser.add_argument("--output_dim", type=int, default=6)
-    parser.add_argument("--output_root", type=str, default="phenotyping/data/final/ours_small_multitrait")
+    parser.add_argument("--output_root", type=str, default="log/reg_multitrait")
     parser.add_argument("--log_dir", type=str, required=True)
     parser.add_argument("--target_traits", type=str, default="all", help="Comma-separated trait names or 'all'")
     parser.add_argument("--merge_val_test", action="store_true", default=False, help="Merge val and test as one validation split")

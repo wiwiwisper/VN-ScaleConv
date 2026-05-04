@@ -57,7 +57,6 @@ class get_model(nn.Module):
         x = self.conv4(x)
         x4 = self.pool4(x)
 
-        # 多尺度特征融合
         x = torch.cat((x1, x2, x3, x4), dim=1)
         x = self.conv5(x)
 

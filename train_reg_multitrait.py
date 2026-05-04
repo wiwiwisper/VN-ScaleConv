@@ -35,7 +35,6 @@ def parse_args():
     parser.add_argument("--gpu", type=str, default="0")
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--gt_txt", type=str, default="phenotyping/data/final/gt_leaf_traits_6params_90.txt")
-    parser.add_argument("--feature_transform", action="store_true", default=False)
     parser.add_argument("--rot", type=str, default="aligned", choices=["aligned", "z", "so3"])
     parser.add_argument("--n_knn", type=int, default=10)
     parser.add_argument("--model", type=str, default="vn_dgcnn_chidu_multitrait", choices=list(MODEL_REGISTRY.keys()))
